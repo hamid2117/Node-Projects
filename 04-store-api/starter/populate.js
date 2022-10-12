@@ -22,7 +22,7 @@ const destroyData = async () => {
   try {
     await ProductModel.deleteMany()
     console.log('data is destroyed ')
-    process.exit(0)
+    process.exit(0) // sucess as 0 and failure as 1 (like red)
   } catch (error) {
     console.error(`Error of destroy Data is : ${error}`)
     process.exit(1)
