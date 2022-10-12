@@ -24,7 +24,7 @@ const productSchema = new mongoose.Schema({
   company: {
     type: String,
     enum: {
-      values: ['gulahmed', 'cotton', 'washandwear'],
+      values: ['marcos', 'liddy', 'ikea', 'caressa'],
       message: '{VALUE} is not supported',
     },
   },
