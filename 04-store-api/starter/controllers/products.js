@@ -1,8 +1,36 @@
-const getProducts = (req, res) => {
-  res.send('we are live ')
+const ProductModel = require('../models/product')
+
+const getProductsStatic = async (req, res) => {
+  const products = await ProductModel.find()
+  res.status(200).json({ products })
 }
-const getProductsStatic = (req, res) => {
-  res.send('we are live ')
+const getProducts = async (req, res) => {
+  const { featured, name, company, sort } = req.query
+
+  const queryObj = {}
+
+  if (featured) {
+    queryObj.featured = featured === 'true' ? true : false
+  }
+  if (name) {
+    queryObj.name = { $regex: name, $option: 'i' } // i indicate a = A
+  }
+  if (company) {
+    queryObj.company = company
+  }
+
+  let result = ProductModel.find(queryObj)
+
+  if (sort) {
+    const sortList = sort.split(',').join(' ')
+    result = result.sort(sortList)
+  } else {
+    result = result.sort('createdAt')
+  }
+
+  const products = await result
+
+  res.status(200).json({ products })
 }
 
 module.exports = { getProducts, getProductsStatic }
