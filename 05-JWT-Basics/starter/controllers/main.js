@@ -18,19 +18,12 @@ const handleLogin = (req, res) => {
 }
 
 const handleDashbaord = (req, res) => {
-  const authHeader = req.headers.authorization
-
-  if (!authHeader || !authHeader.startsWith('Bearer ')) {
-    throw new CustomError('No Token provided', 401)
-  }
-  const token = authHeader.split(' ')[1]
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET)
-    console.log(decoded)
-  } catch (error) {
-    throw new CustomError('Unauthorized ', 401)
-  }
-  res.status(200).json({ msg: 'salam', secret: 'We always work for ALLAH.' })
+  const { id, username } = req.user
+  console.log(req.user)
+  res.status(200).json({
+    msg: `Salam ${username} `,
+    secret: 'We always work for ALLAH.',
+  })
 }
 
 module.exports = {
