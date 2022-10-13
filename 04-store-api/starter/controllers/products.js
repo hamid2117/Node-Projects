@@ -13,7 +13,7 @@ const getProducts = async (req, res) => {
     queryObj.featured = featured === 'true' ? true : false
   }
   if (name) {
-    queryObj.name = { $regex: name, $option: 'i' } // i indicate a = A
+    queryObj.name = { $regex: name, $options: 'i' } // i indicate a = A
   }
   if (company) {
     queryObj.company = company
@@ -27,7 +27,7 @@ const getProducts = async (req, res) => {
       '<=': '$lte',
     }
     const regEx = /\b(<|>|>=|<=|=)\b/g
-    const filter = numericFilters.replace(
+    let filter = numericFilters.replace(
       regEx,
       (match) => `-${operatorMap[match]}-`
     )
@@ -35,12 +35,11 @@ const getProducts = async (req, res) => {
     filter = filter.split(',').map((item) => {
       const [field, operator, value] = item.split('-')
       if (options.includes(field)) {
-        queryObj[field] = { [operator]: [Number(value)] }
+        queryObj[field] = { [operator]: Number(value) }
       }
     })
   }
 
-  console.log(queryObj)
   let result = ProductModel.find(queryObj)
 
   if (sort) {
