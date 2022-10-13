@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken')
 const CustomError = require('../errors/custom-error')
+
 const handleLogin = (req, res) => {
   const { username, password } = req.body
 
@@ -8,7 +9,6 @@ const handleLogin = (req, res) => {
   }
 
   const id = new Date().getDate()
-  console.log(id)
 
   const token = jwt.sign({ id, username }, process.env.JWT_SECRET, {
     expiresIn: '30d',
@@ -18,6 +18,18 @@ const handleLogin = (req, res) => {
 }
 
 const handleDashbaord = (req, res) => {
+  const authHeader = req.headers.authorization
+
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    throw new CustomError('No Token provided', 401)
+  }
+  const token = authHeader.split(' ')[1]
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET)
+    console.log(decoded)
+  } catch (error) {
+    throw new CustomError('Unauthorized ', 401)
+  }
   res.status(200).json({ msg: 'salam', secret: 'We always work for ALLAH.' })
 }
 
