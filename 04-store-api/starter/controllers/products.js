@@ -5,7 +5,7 @@ const getProductsStatic = async (req, res) => {
   res.status(200).json({ products })
 }
 const getProducts = async (req, res) => {
-  const { featured, name, company, sort, fields } = req.query
+  const { featured, name, company, sort, fields, numericFilters } = req.query
 
   const queryObj = {}
 
@@ -18,7 +18,29 @@ const getProducts = async (req, res) => {
   if (company) {
     queryObj.company = company
   }
+  if (numericFilters) {
+    const operatorMap = {
+      '>': '$gt',
+      '>=': '$gte',
+      '=': '$eq',
+      '<': '$lt',
+      '<=': '$lte',
+    }
+    const regEx = /\b(<|>|>=|<=|=)\b/g
+    const filter = numericFilters.replace(
+      regEx,
+      (match) => `-${operatorMap[match]}-`
+    )
+    const options = ['price', 'rating']
+    filter = filter.split(',').map((item) => {
+      const [field, operator, value] = item.split('-')
+      if (options.includes(field)) {
+        queryObj[field] = { [operator]: [Number(value)] }
+      }
+    })
+  }
 
+  console.log(queryObj)
   let result = ProductModel.find(queryObj)
 
   if (sort) {
