@@ -7,7 +7,13 @@ const app = express()
 const fileUploader = require('express-fileupload')
 // database
 const connectDB = require('./db/connect')
-
+// cloudinary
+const cloudinary = require('cloudinary').v2
+cloudinary.config({
+  cloud_name: process.env.cloud_name,
+  api_key: process.env.api_key,
+  api_secret: process.env.api_secret,
+})
 //router
 const productRouter = require('./routes/productRoutes')
 
@@ -16,7 +22,11 @@ const notFoundMiddleware = require('./middleware/not-found')
 const errorHandlerMiddleware = require('./middleware/error-handler')
 
 app.use(express.json())
-app.use(fileUploader())
+app.use(
+  fileUploader({
+    useTempFiles: true,
+  })
+)
 
 app.use(express.static(path.join(__dirname, './public')))
 
