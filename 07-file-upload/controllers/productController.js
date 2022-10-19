@@ -6,9 +6,9 @@ const createProduct = async (req, res) => {
   res.status(StatusCodes.CREATED).json({ product })
 }
 const getAllProducts = async (req, res) => {
-  res.send('Get All Product')
+  const products = await Product.find({})
 
-  res.status(StatusCodes.OK).send('All Products')
+  res.status(StatusCodes.OK).json({ products })
 }
 
 module.exports = {
