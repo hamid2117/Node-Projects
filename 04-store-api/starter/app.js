@@ -19,6 +19,7 @@ app.use(express.json())
 app.use('/api/v1/products', productsRouter)
 
 app.use(notFoundMiddleware)
+// express rule errror handler in last  and error handler in last bcs after throw new Error  next line will not be exceuted
 app.use(errorHandlerMiddleware)
 
 module.exports = app
